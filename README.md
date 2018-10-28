@@ -1,5 +1,5 @@
 # Xplodde
-Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes, MAB
+Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes, MAMB
 
 # Install
 

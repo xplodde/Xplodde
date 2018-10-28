@@ -4,7 +4,7 @@
     "description": "Xplodde media explorer and wallet",
     "main": "main.js",
     "author": "Xplodde",
-    "license": "ISC",
+    "license": "XPLD",
     "scripts": {
         "start": "webpack-dev-server --inline --progress --port 8080",
         "build": "rimraf build && webpack --config webpack.config.js --progress --profile --bail",
@@ -13,6 +13,10 @@
         "electron": "npm run build && electron .",
         "postinstall": "electron-builder install-app-deps",
         "dist": "electron-builder"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/xplodde/Xplodde"
     },
     "dependencies": {
         "@angular/animations": "~4.2.0",
@@ -90,17 +94,26 @@
         "webpack-merge": "^3.0.0"
     },
     "build": {
+        "asar": true,
         "appId": "Xplodde",
         "mac": {
             "target": "dmg",
             "icon": "./xplodde.png"
         },
         "win": {
-            "icon": "./xplodde.ico"
+            "icon": "./xplodde.ico",
+            "target": "nsis"
         },
         "linux": {
             "target": "AppImage",
             "icon": "./xplodde.png"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": false,
+            "allowElevation": true,
+            "allowToChangeInstallationDirectory": true,
+            "runAfterFinish": true
         },
         "files": [
             "build",

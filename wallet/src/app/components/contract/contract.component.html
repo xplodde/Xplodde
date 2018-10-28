@@ -1,0 +1,40 @@
+<nav class="flex-row">
+    <a routerLink = "new-contract" routerLinkActive="active" #new="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="new.isActive" src='~icons/newcontract_icon.svg'>
+                <img *ngIf="!new.isActive" src='~icons/newcontract_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">New Contract</p>
+        </div>
+      </a>
+    <a routerLink = "global-position/1" routerLinkActive="active" #globalp="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="globalp.isActive" src='~icons/global_icon.svg'>
+                <img *ngIf="!globalp.isActive" src='~icons/global_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Global position</p>
+        </div>
+    </a>
+    <a routerLink = "search" routerLinkActive="active" #search="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="search.isActive" src='~icons/searchcontract_icon.svg'>
+                <img *ngIf="!search.isActive" src='~icons/searchcontract_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Search contract</p>
+        </div>
+    </a>
+  </nav>
+<div *ngIf="_scan.apikey =='' || _web3.infuraKey ==''" class="content flex-inside">
+    <p *ngIf="!_account.account?.address; else content" class="text-center whiteBox">Set your api keys in 
+        <a routerLink = "/settings">Settings Page</a></p>
+</div>
+<div *ngIf="_scan.apikey !='' && _web3.infuraKey !=''" class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}">
+    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" class="text-center whiteBox">Select an account</p>
+    <ng-template #content>
+      <router-outlet></router-outlet>
+    </ng-template>
+</div>
+    

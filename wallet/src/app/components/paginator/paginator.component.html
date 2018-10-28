@@ -1,0 +1,18 @@
+<ul *ngIf="count != 1">
+    <li (click)="onPage(1, $event)" >
+      <button title="Go to first page" [disabled]="currentPage == 1">FIRST</button>
+    </li>
+    <li (click)="onPage(currentPage - 1, $event)">
+      <button title="Go to previous page" [disabled]="currentPage == 1">PREV</button>
+    </li>
+    <li>
+        <p>{{currentPage}} DE {{count}}</p>
+    </li>
+    <li (click)="onPage(currentPage + 1, $event)" >
+      <button title="Go to next page"[disabled]="currentPage == count" >NEXT</button>
+    </li>
+    <li (click)="onPage(count, $event)">
+      <button title="Go to last page" [disabled]="currentPage == count" >LAST</button>
+    </li>
+</ul>
+  

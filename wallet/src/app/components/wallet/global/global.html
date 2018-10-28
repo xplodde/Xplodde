@@ -1,0 +1,27 @@
+<h1 style="text-align: right; font-weight: normal">Balance: ETH {{_account.account.balance | number:'1.2-5':'en'}} </h1>
+
+<p *ngIf="_account.marginCalls.length==0 && _account.events.length == 0" class="backWhite text-center"> You don't have contract events</p>
+<div *ngIf="_account.marginCalls.length>0" class="scroll scrollbar" style="height: 15vh">
+    <ul class="list round">
+        <li *ngFor="let marginCall of _account.marginCalls, index as  i" class="odd">
+          <div class="inline left">
+              <p class="bold dark">ContractId:{{marginCall.id}}</p>
+              <p *ngIf="marginCall.value>=0">ETH {{(marginCall.value | converter:'fromWei':'ether').toString() | number:'1.2-7':'en'}}</p>
+          </div>
+          <button class="right btn-small warning" (click)="recharge(marginCall)"> Transfer </button>
+      </li>
+  </ul>
+</div>
+<div *ngIf="_account.events.length > 0"class="scroll scrollbar dist" [ngStyle]="{'height':_account.marginCalls.length>0 ? '45vh' : '63vh' }">
+    <ul class="list round">
+        <li *ngFor="let event of _account.events, index as  i" [ngClass]="((i+1)%2 == 0) ? 'even' : 'odd'">
+          <div class="inline left">
+              <p class="dark">ContractId:{{event.id}} - {{event.type}} </p>
+              <p *ngIf="event.type== 'Margin Call'" class="red">ETH {{(event.value | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</p>
+              <p *ngIf="event.value>=0 && event.type =='Daily Settlement'" class="green">ETH {{(event.value | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</p>
+              <p *ngIf="event.value<0"class="red"> ETH {{(event.value*(-1) | converter:'fromWei':'ether') | number:'1.2-7':'en'}}</p>
+          </div>
+          <span class="dark right"> {{event.timestamp*1000 | date:'d-M-y  H:mm' }}</span>
+      </li>
+  </ul>
+</div>

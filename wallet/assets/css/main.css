@@ -1,0 +1,701 @@
+/************************ FONTS ************************/
+
+@font-face {
+    font-family: "Lato-Regular";
+    src: url("./Lato/Lato-Regular.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: "Lato-Bold";
+    src: url("./Lato/Lato-Bold.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: "Lato-Italic";
+    src: url("./Lato/Lato-Italic.ttf") format('truetype');
+}
+
+
+/************************* GENERAL ************************/
+
+* {
+    padding: 0;
+    margin: 0;
+    font-size: 10pt;
+    font-family: "Lato-Regular", sans-serif;
+    color: #526888;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    overflow-y: hidden;
+    max-height: 100%;
+}
+
+h1 {
+    font-family: "Lato-Regular";
+    font-size: 14pt;
+    font-weight: bold;
+    padding-bottom: 10px;
+    color: #2c3749;
+}
+
+h2 {
+    font-family: "Lato-Bold";
+    font-size: 12pt;
+}
+
+button {
+    cursor: pointer;
+}
+
+.even {
+    background-color: #f6f6f6;
+}
+
+.odd {
+    background-color: #fff;
+}
+
+.block {
+    display: block;
+    width: 100%;
+}
+
+.title {
+    color: #0d264f;
+    padding-left: 15px;
+    font-family: "Lato-Bold"
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.inline {
+    display: inline;
+}
+
+.inlineBlock {
+    display: inline-block;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-inside {
+    flex-grow: 1;
+    display: flex;
+}
+
+.flex1 {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.dist {
+    margin-top: 25px;
+}
+
+.half {
+    width: 46%;
+}
+
+.half div {
+    display: inline-block;
+}
+
+.round {
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+.green {
+    color: #13B57E;
+}
+
+.red {
+    color: #E66978;
+}
+
+.italic {
+    font-family: 'Lato-Italic';
+    font-size: 9pt;
+}
+
+.dark {
+    color: #0d264f;
+    padding: 5px 0;
+}
+
+.bold {
+    font-family: 'Lato-Bold';
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+
+/************************* DIALOGS *************************/
+
+.mat-dialog-container {
+    position: relative;
+    border-top: 10px solid #38a1db;
+    border-radius: 8px;
+    background-color: #e6e9f0;
+    padding: 15px !important;
+}
+
+.mat-dialog-conatiner .half {
+    width: 49%;
+}
+
+.margin-bottom-dialog {
+    margin-bottom: 70px;
+}
+
+.mat-dialog-container .buttons {
+    position: absolute;
+    bottom: 20px;
+    width: 630px;
+}
+
+.margin {
+    margin: 15px;
+}
+
+.title-button-navbar {
+    margin-top: 10px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+
+/************************* HEADER *************************/
+
+header {
+    height: 73px;
+    min-height: 73px;
+    background-color: #0d264f;
+    position: relative;
+}
+
+header>img {
+    max-height: 30px;
+    margin: 25px 0 0 25px;
+}
+
+#network-select {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 220px;
+    height: 30px;
+    border: 1px solid #444;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.1)
+}
+
+#network-select p {
+    color: #888;
+    padding: 6px 15px;
+}
+
+#network-select .select-list {
+    top: 29px;
+    left: 0;
+}
+
+#network-select .select-list>p {
+    margin: 10px;
+}
+
+.circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.circle-blue {
+    background-color: #4A90E2;
+}
+
+.circle-red {
+    background-color: #E66978;
+}
+
+.select-list {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    padding-bottom: 10px;
+    z-index: 10;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.overlay {
+    z-index: 5;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+    opacity: 0.5;
+    background-color: black;
+}
+
+.select-list>div:first-child {
+    padding: 0 10px;
+}
+
+.select-list ul {
+    list-style-type: none;
+}
+
+.select-list::-webkit-scrollbar-thumb {
+    border-left: 1px solid #eee;
+}
+
+.select-list li,
+.select-list p {
+    padding: 5px 10px;
+}
+
+.select-list li:hover {
+    background-color: #eee;
+}
+
+.select-list hr {
+    margin-bottom: 5px;
+}
+
+
+/************************* SIDE NAV *************************/
+
+.sidenav {
+    border-top: 7px solid #0d264f;
+    display: inline-block;
+    min-width: 250px;
+    max-width: 250px;
+    background-color: #496691;
+}
+
+.bottomR {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+
+.main-content {
+    flex-grow: 1;
+    background-color: #e6e9f0;
+    overflow: hidden;
+}
+
+
+/************************* TOP NAV *************************/
+
+nav {
+    margin-bottom: 50px;
+}
+
+nav a {
+    position: relative;
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 50px;
+    text-align: center;
+    margin: 0;
+    text-decoration: none;
+}
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+
+nav a p,
+a.pending,
+a.pending span,
+.italic {
+    color: #8697b1;
+}
+
+.top-nav-img {
+    width: 20px;
+    width: 20px
+}
+
+nav a,
+nav a:focus {
+    border-top: 7px solid #0d264f;
+}
+
+nav a.active {
+    border-top: 7px solid #37A2DC;
+}
+
+nav a.active p {
+    color: #35465e;
+}
+
+nav a div {
+    padding-top: 15px;
+    bottom: 0;
+    width: 100%;
+}
+
+nav a span {
+    padding-bottom: 8px;
+    height: 15px;
+    display: block;
+    width: 100%;
+}
+
+.content {
+    padding: 15px 20px 15px 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.list {
+    list-style-type: none;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    color: #546a89;
+}
+
+.list li {
+    overflow: hidden;
+    clear: both;
+    padding: 12px;
+}
+
+.list li a {
+    text-decoration: none;
+}
+
+.title-button-navbar {
+    margin-top: 10px;
+}
+
+.backWhite {
+    background-color: white;
+    overflow: hidden;
+    padding: 20px;
+}
+
+
+/**************************** FORMS ****************************/
+
+input,
+textarea,
+div.input-container,
+.input,
+.whiteBox,
+.whiteBox-extra,
+.backWhite,
+select {
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+input[type="checkbox"] {
+    height: auto;
+    margin: 0 12px;
+}
+
+input,
+div.input-container,
+.input,
+.whiteBox,
+select {
+    height: 44px;
+}
+
+.input-container span,
+.input-container p {
+    padding: 14px 12px 14px 0;
+    cursor: pointer;
+}
+
+textarea {
+    resize: none;
+}
+
+div.input-container {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.input-container input {
+    flex-grow: 1;
+    margin: 0;
+    z-index: 2;
+    background-color: transparent;
+}
+
+input.error,
+input.error:focus,
+textarea.error,
+textarea.error:focus,
+div.error,
+div.error:focus {
+    border: 1px solid #E66978;
+}
+
+p.error,
+p.error span {
+    color: #E66978;
+    font-size: 9pt;
+}
+
+p.error {
+    margin-top: -10px;
+    margin-bottom: 10px;
+    min-height: 11pt;
+    text-align: right;
+}
+
+:focus {
+    outline: none;
+}
+
+.text-overflow-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/**************************** BUTTONS ****************************/
+
+.btn {
+    height: 44px;
+    padding: 0 40px;
+    border-radius: 25px;
+    background-color: #37A2DC;
+    color: #fff;
+    border: none;
+    text-decoration: none;
+    font-family: "Lato-Bold";
+    font-size: 11pt;
+}
+
+.btn-small {
+    border: none;
+    background-color: #37A2DC;
+    padding: 5px;
+    color: #fff;
+    margin-right: 5px;
+    margin-top: 10px;
+}
+
+.btn-clear {
+    background-color: #a0cde8;
+}
+
+.extra {
+    margin-left: 20px;
+}
+
+.warning {
+    border: 1px solid #E66978;
+    color: #E66978;
+    background: none;
+}
+
+.warning:focus,
+.warning:hover,
+.error-founds {
+    color: white;
+    background-color: #E66978;
+}
+
+
+/************************ SCROLLS *****************************/
+
+.auto-h {
+    position: fixed;
+    bottom: 60px;
+    top: 220px;
+    left: 270px;
+    right: 15px;
+}
+
+#general-token-list {
+    top: 270px;
+}
+
+.scroll {
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    background-color: #526888;
+}
+
+.scrollbar::-webkit-scrollbar {
+    margin: -15px;
+}
+
+.scrollable-content {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    display: none;
+}
+
+.sort {
+    margin-left: 27px;
+    margin-top: 5px;
+}
+
+.sort p {
+    padding: 20px 10px;
+}
+
+.low-opacity {
+    opacity: 0.3;
+}
+
+.sort span img:first-child {
+    transform: rotate(180deg);
+}
+
+
+/********************** TERMS **********************/
+
+#terms ol,
+#terms ul {
+    padding-left: 10px;
+}
+
+#terms div>ol {
+    list-style-type: lower-alpha;
+}
+
+ol ol {
+    list-style-type: decimal;
+}
+
+ol ol ol {
+    list-style-type: lower-roman;
+}
+
+#terms {
+    top: 310px;
+    margin-right: 5px;
+}
+
+#terms p,
+#terms li {
+    line-height: 1.5em;
+    padding: 10px 0;
+}
+
+#address {
+    margin: 10px;
+}
+
+#copy {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+
+/********** CUSTOM RADIO BUTTON **********/
+
+.radioDiv {
+    margin: 10px 0 30px 0;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]+label {
+    margin-right: 30px;
+    cursor: pointer;
+}
+
+input[type="radio"]+label span {
+    box-shadow: 0 0 0 2px 0.5;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: -1px 7px 0 0;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: white;
+}
+
+input[type="radio"]:checked+label span {
+    width: 20px;
+    height: 20px;
+    background-color: #526888;
+    border: 4px solid white;
+}
+
+.small {
+    font-size: 9pt;
+}

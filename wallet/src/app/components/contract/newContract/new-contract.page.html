@@ -1,0 +1,92 @@
+<form (ngSubmit)="onSubmit()" #contractForm="ngForm">
+    <div class="clear">
+        <div class="half left">
+            <label class="title" for="action">Action</label>
+            <select id="action" class="block" [(ngModel)]="c.action" name="acction">
+                <option *ngFor="let action of actions, index as i" value="{{i}}">{{action}}</option>
+            </select>
+        </div>
+        <!-- change to number??-->
+        <div class="half right">
+            <label class="title" for="quantity">Quantity <span>(integer)</span>*</label>
+            <div class="input-container" [ngClass]="{'error': (c.quantity<=0 || c.quantity%1 !=0) && (q.dirty || q.touched || submited )}">
+                <span id="currency">{{pairs[c.pair]}}</span>
+                <input id="quantity" required type="number" [(ngModel)]="c.quantity" name="quantity" #q="ngModel" />
+            </div>
+        </div>
+    </div>
+    <div class="clear">
+        <div class="half left">
+            <label class="title" for="pair">Pair</label> <span class="small extra" *ngIf="currentPairPrice != 0">Current value: {{currentPairPrice | converter:'fromWei':'ether'}} ETH</span>
+            <select id="pair" class="block" [(ngModel)]="c.pair" name="pair" (change)="getPair()">
+                <option *ngFor="let pair of pairs, index as i" value="{{i}}">ETH/{{pair}}
+                    <span class="warning small">{{currentPairPrices[i]  | converter:'fromWei':'ether' }} ETH</span>
+                </option>
+            </select>
+        </div>
+        <div class="half right">
+            <label class="title" for="duration">Duration *</label>
+            <input id="duration" class="block" type="number" [ngClass]="{'error': c.duration<=0 && (d.dirty || d.touched || submited )}" [(ngModel)]="c.duration" name="duration" #d='ngModel' />
+        </div>
+    </div>
+    <div class="clear">
+        <div class="checkbox inline">
+            <input type="checkbox" id="privateDeal" [(ngModel)]="c.private" name="privateDeal" (click)="changePrivate()">
+            <label for="privateDeal"><span><img *ngIf="c.private" src="~icons/check.svg"/></span></label>
+        </div>
+        <span class="dark">Private Deal</span>
+    </div>
+    <div class="clear dist">
+        <label class="title" for="intial">Initial Margin</label>
+        <div class="flex-row">
+            <p class="input inp1">ETH {{(intialMargin() | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</p>
+            <div class="range">
+                <span class="left">1%</span>
+                <span class="right">100%</span>
+                <input type="range" min="1" max="100" id="intial" class="clear" [(ngModel)]="c.initialM" name="initial" (change)="intialOptimal('range')">
+                <div class="bar" [style.width]="c.initialM +'%'"></div>
+            </div>
+            <div class="input-container">
+                <input id="initialNumber" class="inp2" type="number" min="1" max="100" required [value]="c.initialM" (change)="changeIntial($event.target.value)" name="intial" #intial>
+                <span>%</span>
+            </div>
+            <div class="checkbox">
+                <div>
+                    <input type="checkbox" id="inOptimal" [checked]="isOptimalM" (change)="intialOptimal('check')">
+                    <label for="inOptimal"><span><img *ngIf="isOptimalI" src="~icons/check.svg"/></span></label>
+                    <span><img src="~icons/info_icon.svg"></span>
+                </div>
+                <p class="clear" for="inOptimal">Optimal</p>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <label class="title" for="maintenance">Maintenance Margin</label>
+        <div class="flex-row">
+            <p class="input inp1">ETH {{(maintenanceMargin() | converter:'fromWei':'ether') | number:'1.2-7':'en'}}</p>
+            <div class="range">
+                <span class="left">1%</span>
+                <span class="right">100%</span>
+                <input class="clear" type="range" min="1" max="100" id="maintenance" [(ngModel)]="c.maintenanceM" name="maintenance" (change)="maintenanceOptimal('range')" />
+                <div class="bar" [style.width]="c.maintenanceM +'%'"></div>
+            </div>
+            <div class="input-container">
+                <input id="maintNumber" class="inp2" type="number" min="1" max="100" required [value]="c.maintenanceM" (change)="changeMaint($event.target.value)" name="maintenance">
+                <span>%</span>
+            </div>
+            <div class="checkbox">
+                <div>
+                    <input type="checkbox" id="maintOptimal" [checked]="isOptimalM" (change)="maintenanceOptimal('check')" />
+                    <label for="maintOptimal"><span><img *ngIf="isOptimalM" src="~icons/check.svg"/></span></label>
+                    <span><img src="~icons/info_icon.svg"></span>
+                </div>
+                <p class="clear" for="maintOptimal">Optimal</p>
+            </div>
+        </div>
+    </div>
+    <button class="reset" type="button" (click)="defaultContract()">CLEAR ALL FIELDS</button>
+    <div class="clear bottomR">
+        <button type="submit" class="btn">Generate Contract</button>
+    </div>
+</form>

@@ -1,0 +1,46 @@
+<div>
+    <h1 class="text-center">Create New Contract<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<!--<p class="text-center dist">1ETH = {{(data.contract.pairValue | converter:'fromWei':'ether')| number:'1.2-5':'en'}}{{data.contract.pairText}}</p>-->
+<div class="margin">
+    <p><span class="dark bold">Account:</span> {{data.contract.account.address}}</p>
+    <p><span class="dark bold">Creation date:</span> {{data.contract.date | date:'d-M-y'}}</p>
+    <p><span class="dark bold">Pair:</span> ETH/{{data.contract.pairText}}</p>
+    <p><span class="dark bold">Quantity:</span> {{data.contract.quantity}}</p>
+    <p><span class="dark bold">Initial Margin:</span> ETH {{(data.intial | converter:'fromWei':'ether')| number:'1.2-5':'en'}}</p>
+    <p><span class="dark bold">Maintenance Margin:</span> {{(data.maintenance | converter:'fromWei':'ether')| number:'1.2-5':'en'}}ETH</p>
+    <p><span class="dark bold">Duration:</span> {{data.contract.duration}} days</p>
+    <div class="flex-row dist">
+        <div style="flex:1">
+            <p class="dark bold">Amount</p>
+            <p>{{((data.cost-data.fees) | converter:'fromWei':'ether') | number:'1.2-8':'en' }} ETH</p>
+        </div>
+        <div style="flex:1">
+            <p class="dark  bold">Fees</p>
+            <p>ETH {{(data.fees | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
+        </div>
+        <div style="flex:1">
+            <p class="dark  bold">Total</p>
+            <p>ETH {{(data.cost | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
+        </div>
+    </div>
+</div>
+
+
+<div *ngIf="!insufficient">
+    <div class="dist">
+        <label class="title block">Password*</label>
+        <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
+    </div>
+    <div class="buttons">
+        <button class="btn btn-clear half left" (click)="closeDialog()">Back</button>
+        <button class="btn half right" [md-dialog-close]="pass">Create</button>
+    </div>
+
+</div>
+<div *ngIf="insufficient" class="dist">
+    <p class="error-founds input text-center dist">You don't have sufficient founds</p>
+    <div class="buttons text-center">
+        <button class="btn half" (click)="closeDialog()">Back</button>
+    </div>
+</div>

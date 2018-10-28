@@ -1,0 +1,127 @@
+<p *ngIf="deals.length==0" class="text-center whiteBox">
+    No deals found</p>
+<div *ngIf="deals.length>0" class="scroll scrollbar">
+    <div *ngFor="let deal of deals" class="global-deal clear">
+        <div class="deal-header">
+            <div class="left">
+                <p class="bold id">ContractID: {{deal.id}}</p>
+                <p *ngIf="!deal.status" class="title">Counterparty: Pending</p>
+                <p *ngIf="deal.status && deal.buyer.toLowerCase() != address.toLowerCase()" class="title">Counterparty: {{deal.buyer}}</p>
+                <p *ngIf="deal.status && deal.seller.toLowerCase() != address.toLowerCase()" class="title">Counterparty: {{deal.seller}}</p>
+            </div>
+            <p *ngIf="deal.buyer.toLowerCase() == address.toLowerCase()" class="right btn action">Buy<span class="circle circle-green"></span></p>
+            <p *ngIf="deal.seller.toLowerCase() == address.toLowerCase()" class="right btn action">Sell<span class="circle circle-red"></span></p>
+        </div>
+        <div class="clear deal-content">
+            <ng-container *ngIf="deal.status==false; then pending; else active">
+            </ng-container>
+            <ng-template #pending>
+                <div class="deal-content-left">
+                    <div class="deal-content-left-file">
+                        <p class="bold">Creation date:</p>
+                        <p>{{(deal.creationDate*1000) | date:'d-M-y'}}</p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Starting date:</p>
+                        <p>Pending</p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Token pair:</p>
+                        <p>ETH/{{pairs[deal.pair]}}</p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Quantity:</p>
+                        <p>{{pairs[deal.pair]}} <span class="right">{{deal.quantity}}</span></p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Contract Total:</p>
+                        <p>Pending</p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Initial Margin:</p>
+                        <p>ETH <span class="right">{{(deal.initialValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Maintenance Margin:</p>
+                        <p>ETH <span class="right">{{(deal.maintenanceValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Duration:</p>
+                        <p>{{deal.duration}} days</p>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #active>
+                <div class="deal-content-left">
+                    <div class="deal-content-left-file">
+                        <p class="bold">Creation date:</p>
+                        <p>{{(deal.creationDate*1000) | date:'d-M-y'}}</p>
+                    </div>
+                    <div class="deal-content-left-file" *ngIf="deal.creationDate>deal.startingDate">
+                        <p class="bold">Starting date:</p>
+                        <p>{{(deal.creationDate*1000) | date:'d-M-y'}}</p>
+                    </div>
+                    <div class="deal-content-left-file" *ngIf="deal.creationDate<=deal.startingDate">
+                        <p class="bold">Starting date:</p>
+                        <p>{{(deal.startingDate*1000) | date:'d-M-y'}}</p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Token pair:</p>
+                        <p>ETH/{{pairs[deal.pair]}}</p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Quantity:</p>
+                        <p>{{pairs[deal.pair]}} <span class="right">{{deal.quantity}}</span></p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Contract Total:</p>
+                        <p>ETH <span class="right">{{(deal.size | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Initial Margin:</p>
+                        <p>ETH <span class="right">{{(deal.initialValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                    <div class="deal-content-left-file">
+                        <p class="bold">Maintenance Margin:</p>
+                        <p>ETH <span class="right">{{(deal.maintenanceValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="deal-content-right">
+                <div class="flex-column">
+                    <div id="marketBalance" *ngIf="deal.status && deal.duration == deal.daysLeft|| deal.status==false && (deal.buyer.toLowerCase() == address.toLowerCase() && deal.buyerBalance !=0 || deal.seller.toLowerCase() == address.toLowerCase() && deal.sellerBalance !=0)">
+                        <p class="title">Market balance</p>
+                        <p *ngIf="deal.buyer.toLowerCase() == address.toLowerCase()" class="box">ETH <span class="right blue-text">{{(deal.buyerBalance+((_pairs.pairs[deal.pair]-deal.creationPrice)*deal.quantity) | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                        <p *ngIf="deal.seller.toLowerCase() == address.toLowerCase()" class="box">ETH <span class="right blue-text">{{(deal.sellerBalance-((_pairs.pairs[deal.pair]-deal.creationPrice)*deal.quantity) | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                    <div id="marketBalance" *ngIf="deal.status && deal.duration > deal.daysLeft">
+                        <p class="title">Market balance</p>
+                        <p *ngIf="deal.buyer.toLowerCase() == address.toLowerCase()" class="box">ETH <span class="right blue-text">{{(deal.buyerBalance+((_pairs.pairs[deal.pair]-_pairs.dailyPairs[deal.pair])*deal.quantity) | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                        <p *ngIf="deal.seller.toLowerCase() == address.toLowerCase()" class="box">ETH <span class="right blue-text">{{(deal.sellerBalance-((_pairs.pairs[deal.pair]-_pairs.dailyPairs[deal.pair])*deal.quantity) | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                    </div>
+                    <div [ngClass]="{'hidden': !(deal.status || !deal.status && (deal.buyer.toLowerCase() == address.toLowerCase() && deal.buyerBalance !=0 || deal.seller.toLowerCase() == address.toLowerCase() && deal.sellerBalance !=0))}">
+                        <div class="deal-content-right-bottom">
+                            <p class="title">Contract balance<a *ngIf="deal.status && (deal.buyer.toLowerCase() == address.toLowerCase() && deal.buyerBalance > deal.initialValue || deal.seller.toLowerCase() == address.toLowerCase() && deal.sellerBalance > deal.initialValue)"
+                                    class="right withdrawal" (click)="withdraw(deal)">Withdrawal</a></p>
+                            <p *ngIf="deal.buyer.toLowerCase() == address.toLowerCase()" class="box">ETH <span class="right blue-text">{{(deal.buyerBalance | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                            <p *ngIf="deal.seller.toLowerCase() == address.toLowerCase()" class="box">ETH <span class="right blue-text">{{(deal.sellerBalance | converter:'fromWei':'ether')| number:'1.2-7':'en'}}</span></p>
+                        </div>
+                    </div>
+                    <div *ngIf="deal.status==false && (deal.firstJoin=='' || deal.firstJoin =='done' && ((deal.buyer == address && deal.buyerBalance == 0) || (deal.seller == address && deal.sellerBalance == 0)))">
+                        <button class="btn btn2 deal-content-right-bottom" (click)="joinDeal(deal)">Join contract</button>
+                    </div>
+                    <div *ngIf="!deal.status">
+                        <button class="btn btn2 deal-content-right-bottom" (click)="destroyDeal(deal)">Destroy contract</button>
+                    </div>
+                    <div *ngIf="deal.status">
+                        <div class="deal-content-right-bottom">
+                            <p class="title">Days left</p>
+                            <p class="box"><span class="blue-text">{{deal.daysLeft}}</span><span class="right">Days</span></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

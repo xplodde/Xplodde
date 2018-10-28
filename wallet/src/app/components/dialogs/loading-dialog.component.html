@@ -1,0 +1,7 @@
+<div class="text-center">
+    <h1 class="dist">Loading...</h1>
+    <p *ngIf="_deals.updating">Loading Contracts</p>
+    <p *ngIf="_events.updating">Loading Events</p>
+    <p *ngIf="_deals.updating || _events.updating">This may take some minutes...</p>
+    <md-progress-bar mode="indeterminate" class="dist green-progress"></md-progress-bar>
+</div>

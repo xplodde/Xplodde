@@ -1,0 +1,32 @@
+<p class="title">{{deals.length}} Results founded</p>
+<div class="scroll scrollbar dist">
+    <table class="round" >
+        <tr>
+            <th>Action</th>
+            <th>Pair</th>
+            <th>Quantity</th>
+            <th>Initial margin</th>
+            <th>Maint. margin</th>
+            <th>Duration</th>
+        </tr>
+        <ng-container *ngFor="let deal of items, index as i" >
+            <tr *ngIf="!(addressEmpty(deal.seller) && addressEmpty(deal.buyer) || !addressEmpty(deal.seller) && !addressEmpty(deal.buyer))" [ngClass]="((i+1)%2 != 0) ? 'odd' : 'even'" class="pointer" (click)="dealInfo(deal)">
+                <td *ngIf="addressEmpty(deal.seller)">BUY</td>
+                <td *ngIf="addressEmpty(deal.buyer)">SELL</td>
+                <td>ETH/{{pairs[deal.pair]}}</td>
+                <td>{{deal.quantity}}</td>
+                <td>{{deal.initialM}}</td>
+                <td>{{deal.maintenanceM}}</td>
+                <td>{{deal.duration}}</td>
+            </tr>
+        </ng-container>
+        
+    </table>
+</div>
+
+<app-paginator *ngIf="totalPages>=1"
+  (goPage)="goToPage($event)"
+  [currentPage]="page"
+  [perPage]="limit"
+  [count]="totalPages"></app-paginator>
+

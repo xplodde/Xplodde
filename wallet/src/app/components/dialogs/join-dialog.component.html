@@ -1,0 +1,42 @@
+<div *ngIf="data.text == 'Margin call transfer'">
+    <h1 class="text-center">Contrac id: {{data.deal.id}}<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div *ngIf="data.text != 'Margin call transfer'">
+    <h1 class="text-center">Contrac id: {{data.deal}}<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div *ngIf="data.text == 'Withdraw Profits'">
+    <p><span class="title">Profits amount: </span> ETH <span *ngIf="data.deal.buyer.toLowerCase() == _account.account.address.toLowerCase()">{{(data.deal.buyerBalance- data.deal.initialValue | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</span>
+        <span *ngIf="data.deal.seller.toLowerCase() == _account.account.address.toLowerCase()">{{(data.deal.sellerBalance- data.deal.initialValue | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</span></p>
+</div>
+<div class="flex-row margin">
+    <div style="flex:1">
+        <p class="dark bold">Amount</p>
+        <p>ETH {{((data.cost-data.fees) | converter:'fromWei':'ether') | number:'1.2-8':'en' }}</p>
+    </div>
+    <div style="flex:1">
+        <p class="dark bold">Fees</p>
+        <p>ETH {{(data.fees | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
+    </div>
+    <div style="flex:1">
+        <p class="dark bold">Total</p>
+        <p>ETH {{(data.cost | converter:'fromWei':'ether').toString() | number:'1.2-8':'en'}}</p>
+    </div>
+</div>
+<div *ngIf="!insufficient">
+    <div class="dist">
+        <label class="title block">Password*</label>
+        <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
+    </div>
+    <div class="buttons">
+        <button class="btn btn-clear half left" (click)="closeDialog()">Back</button>
+        <button *ngIf="!data.action" class="btn half right" (click)="functionContract(pass)">{{data.text}}</button>
+
+    </div>
+</div>
+
+<div *ngIf="insufficient" class="dist">
+    <p class="error-founds input text-center dist">You don't have sufficient founds</p>
+    <div class="buttons text-center">
+        <button class="btn half" (click)="closeDialog()">Back</button>
+    </div>
+</div>

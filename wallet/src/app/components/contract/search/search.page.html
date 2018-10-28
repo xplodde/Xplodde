@@ -1,0 +1,98 @@
+<div class="flex-row">
+    <input type="text" id="searchId" [(ngModel)]="id" placeholder="Search by id" name="searchId">
+    <button class="btn" (click)="getDealId(id)"><img src="~icons/searchmag_icon.svg"/></button>
+    <button class="btn" (click)="toogleShow()">{{showText}}</button>
+</div>
+<div class="dist">
+    <form *ngIf="show">
+        <div class="flex-row">
+            <div>
+                <label class="title">Action</label>
+                <select id="action" [(ngModel)]="f.action" name="action">
+                        <option value="0">BUY</option>
+                        <option value="1">SELL</option>
+                    </select>
+            </div>
+            <div>
+                <label class="title">Pair</label>
+                <select id="pair" [(ngModel)]="f.pair" name="pair">
+                    <option *ngFor="let pair of pairs, index as i" value="{{i}}">ETH/{{pair}}</option>
+                </select>
+            </div>
+            <div>
+                <label class="title">Quantity</label>
+                <select id="pair" [(ngModel)]="f.quantity" name="pair">
+                    <ng-container *ngFor="let q of quantities, index as i" >
+                        <option *ngIf="i < (quantities.length-2)" value="{{i}}">From {{q[0]}} to {{q[1]}} </option>
+                        <option *ngIf="i == (quantities.length-1)" value="{{i}}">More than {{q[0]}}</option>
+                    </ng-container>
+                </select>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div>
+                <label class="title">Intial margin</label>
+                <select id="iMargin" [(ngModel)]="f.initialM" name="iMargin">
+                    <ng-container *ngFor="let iMargin of iMargins, index as i" >
+                        <option *ngIf="i < (iMargins.length-2)"  value="{{i}}">From {{iMargin[0]}} to {{iMargin[1]}} </option>
+                        <option *ngIf="i == (iMargins.length-1)"  value="{{i}}">More than {{iMargin[0]}}</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div>
+                <label class="title">Maint. margin</label>
+                <select id="mMargin" [(ngModel)]="f.maintM" name="mMargin">
+                    <ng-container *ngFor="let mMargin of mMargins, index as i" >
+                        <option *ngIf="i < (mMargins.length-2)"  value="{{i}}">From {{mMargin[0]}} to {{mMargin[1]}} </option>
+                        <option *ngIf="i == (mMargins.length-1)" value="{{i}}">More than {{mMargin[0]}}</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div>
+                <label class="title">Duration</label>
+                <select id="pair" [(ngModel)]="f.duration" name="pair">
+                    <ng-container *ngFor="let duration of durations, index as i" >
+                        <option *ngIf="i < (durations.length-2)"  value="{{i}}">From {{duration[0]}} to {{duration[1]}} </option>
+                        <option *ngIf="i == (durations.length-1)" value="{{i}}">More than {{duration[0]}}</option>
+                    </ng-container>
+                </select>
+            </div>
+        </div>
+        <div class="right">
+            <button class="round btn-small" (click)="reset()">CLEAR ALL FIELDS</button>
+            <button type="button" class="round btn-small" (click)="onSubmit()">SEARCH</button>
+        </div>
+    </form>
+</div>
+<div *ngIf="searching">
+    <p class="text-center whiteBox dist ">Searching...</p>
+
+</div>
+<div *ngIf="!searching" class="dist clear">
+    <div *ngIf="showId && dealId?.status == false && ( !addressEmpty(dealId?.buyer) || !addressEmpty(dealId?.seller))" class="whiteBox">
+        <h1 class="text-center">Contract Id: {{dealId.id}}</h1>
+        <div class="left">
+            <p *ngIf="!addressEmpty(dealId.buyer)"><span class="title">Counterparty:</span> {{dealId.buyer}}</p>
+            <p *ngIf="!addressEmpty(dealId.seller)"><span class="title">Counterparty:</span> {{dealId.seller}}</p>
+            <p><span class="title">Creation date:</span> {{dealId.creationDate}}</p>
+            <p><span class="title">Pair:</span> ETH/{{pairs[dealId.pair]}}</p>
+            <p><span class="title">Quantity:</span> {{dealId.quantity}}</p>
+            <p><span class="title">Contract Total:</span> ETH {{dealId.size | number:'1.2-7':'en'}}</p>
+            <p><span class="title">Initial Margin:</span> ETH {{(dealId.initialValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}} ({{dealId.initialM }}%)</p>
+            <p><span class="title">Maintenance Margin:</span> ETH {{(dealId.maintenanceValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}} ({{dealId.maintenanceM}}%)</p>
+            <p><span class="title">Duration:</span> {{dealId.duration}} days</p>
+        </div>
+        <div class="buttons">
+            <button *ngIf="addressEmpty(dealId.buyer)" class="btn half right" (click)="joinDeal(dealId)">BUY</button>
+            <button *ngIf="!addressEmpty(dealId.buyer)" class="btn half right" (click)="joinDeal(dealId)">SELL</button>
+        </div>
+    </div>
+    <p *ngIf="(pending.length == 0 && showId==false)|| dealId?.status == true ||
+    (showId == true && (!addressEmpty(dealId?.buyer) && !addressEmpty(dealId?.seller)|| addressEmpty(dealId?.buyer) && addressEmpty(dealId?.seller)))" class="whiteBox text-center">No dealds found</p>
+
+    <div *ngIf="!showId && pending.length > 0" style="margin-bottom: 15px;">
+        <app-search-list [deals]="pending" [pairs]="pairs"></app-search-list>
+
+    </div>
+
+</div>

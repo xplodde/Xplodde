@@ -1,0 +1,24 @@
+<div>
+    <h1 class="text-center">Contrac id: {{data.deal.id}}<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="dist">
+    <p *ngIf="addressEmpty(data.deal.seller)"><span class="title">Counterparty:</span> {{data.deal.buyer}} (BUY)</p>
+    <p *ngIf="addressEmpty(data.deal.buyer)"><span class="title">Counterparty:</span> {{data.deal.seller}} (SELL)</p>
+    <p><span class="title">Creation date:</span> {{data.deal.creationDate}}</p>
+    <p><span class="title">Pair:</span> ETH/{{data.pairText}}</p>
+    <p><span class="title">Quantity:</span> {{data.deal.quantity}}</p>
+    <p><span class="title">Contract Total:</span> ETH {{data.deal.size | number:'1.2-7':'en'}}</p>
+    <p><span class="title">Initial Margin:</span> ETH {{(data.deal.initialValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}} ({{data.deal.initialM }}%)</p>
+    <p><span class="title">Maintenance Margin:</span> ETH {{(data.deal.maintenanceValue | converter:'fromWei':'ether')| number:'1.2-7':'en'}} ({{data.deal.maintenanceM}}%)</p>
+    <p><span class="title">Duration:</span> {{data.deal.duration}} days</p>
+</div>
+
+<div class="buttons">
+    <button class="btn btn-clear half left" (click)="closeDialog()">Back</button>
+    <button *ngIf="addressEmpty(data.deal.buyer)" class="btn half right" (click)="createContract()">BUY</button>
+    <button *ngIf="addressEmpty(data.deal.seller)" class="btn half right" (click)="createContract()">SELL</button>
+</div>
+
+
+
+

@@ -1,0 +1,16 @@
+<div class="half left">
+    <label class="title" for="status">Contract status</label>
+    <select id="status" class="block" [(ngModel)]="status" name="status" (change)="dealsList()">
+        <option value="0"> PENDING</option>
+        <option value="1"> ACTIVE </option>
+    </select>
+</div>
+<div *ngIf="searching"  class="clear">
+    <p class="text-center whiteBox">Searching...</p>
+</div>
+
+<div *ngIf="!searching" class="clear">
+    <deal-list [deals]="deals" [address]="_account.account.address"></deal-list>
+</div>
+
+    

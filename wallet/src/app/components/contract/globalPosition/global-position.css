@@ -1,0 +1,126 @@
+*{
+    color: #0d264f;
+}
+.btn{
+    color: #fff;
+}
+.scroll{
+    height: 58vh;;
+}
+
+.global-deal{
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 20px;
+  margin-top:5px;
+  background-color: rgba(171, 171, 171, 0.15);
+  padding: 15px;
+  overflow:hidden;
+  position:relative;
+}
+.global-deal > div{
+  overflow:hidden;
+  position: relative;
+}
+.deal-header{
+    margin-bottom: 10px;
+}
+.deal-header .title{
+    padding-left:0px;
+}
+.id{
+    font-size: 14pt;
+}
+.action{
+    height: auto;
+    background-color: #1c3c70;
+    padding:10px 15px;
+    font-size:13pt;
+}
+
+.circle{
+  width:14px;
+  height: 14px;
+  border-radius:50%;
+  display: inline-block;
+  margin-left: 15px;
+}
+.circle-green{
+    background-color: #13B57E;
+}
+.circle-red{
+    background-color: #E66978;
+}
+
+.deal-content{
+    display:table;
+    width:100%;
+}
+.deal-content-left, .deal-content-right {
+    padding-top: 10px;
+    display: table-cell;
+    vertical-align:top;
+}
+.deal-content-left{
+    width: 60%;
+}
+.deal-content-right{
+    height: 100%;
+}
+
+.deal-content-left-file{
+    margin-left:0;
+    margin-top: 4px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+}
+.deal-content-left-file p{
+    padding: 4px 0;
+    display:inline-block;
+}
+.deal-content-left-file p:first-child{
+    width: 150px;
+}
+.deal-content-left-file p:last-child{
+    flex:1;
+    padding: 4px 15px;
+}
+
+.deal-content-left-file p:last-child, .box{
+    border-radius: 3px;
+    background-color: rgba(255,255,255, 0.6);
+}
+.deal-content-right div.flex-column{
+    height: 100%;
+}
+.deal-content-right div.flex-column > div {
+    position: relative;
+    flex:1;
+    margin-left: 25px;
+}
+.deal-content-right #marketBalance{
+    flex: 0;
+}
+.deal-content-right-bottom{
+    width: 100%;
+    position:absolute;
+    bottom:0;
+}
+.box{
+    margin-top: 3px;
+    padding: 8px 15px;
+}
+.withdrawal{
+    text-decoration: underline;
+    margin-right:15px;
+    cursor:pointer;
+}
+.btn2{
+    width:100%;
+    background-color: #496691;
+}
+.blue-text{
+    font-family: 'Lato-Bold';
+    color: #37A2DC;
+}

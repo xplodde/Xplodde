@@ -1,5 +1,5 @@
 # Xplodde
-Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes, MAMB
+Authors: MAMB, Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes
 
 # Install
 
@@ -19,7 +19,20 @@ Import & export accounts
 
 Ether, send, receive, history
 
+Liquidation events
+
 Tokens, send receive, history, add
+
+Smart Fortward contracts, create, search , join contract
+
+## Oracle contract Kilauea
+
+https://ropsten.etherscan.io/address/0x103262f243e6f67d12d6a4ea0d45302c1fa4bb0a
+
+## Smart Forwards Xplodde
+
+https://ropsten.etherscan.io/address/0x5ce5615485d4be300c1e413a27b4fddcad7b2fa3 
+
 
 ## Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
 

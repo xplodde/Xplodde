@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.4.25;
 
 /*
 
@@ -178,9 +178,11 @@ interface tokenRecipient {
 
 
 contract kilauea {
+
     function RUN() pure public {}
     function transfer(address,uint256) pure public{}
     function balanceOf() pure public{}
+
 }
 
 
@@ -190,10 +192,11 @@ contract XPLODDE is XPLODDE_ERC20 {
 
 
     mapping (uint256 => mapping (uint256 => datas)) public time;
-    mapping (address => task) public tasks;
+    mapping (address => mapping (uint256 => task)) public tasks;
 
     mapping (address => uint256) public reputation;
     mapping (address => tikerS) internal tikers;
+    mapping (uint256 => federationS) internal federations;
     /*tikerS internal tikers; //changed from internal to public for testing reasons*/
 
     mapping (uint256 => reputationS) public reputationRound;
@@ -203,6 +206,7 @@ contract XPLODDE is XPLODDE_ERC20 {
         uint256 lastTime;
         uint256 frequency;
         string url;
+        uint256 federation;
     }
 
 
@@ -212,6 +216,14 @@ contract XPLODDE is XPLODDE_ERC20 {
         uint256 id;
     }
 
+    struct federationS{
+        string name;
+        address owner;
+        uint256 fee;
+        mapping (address => bool) members;
+
+    }
+
     constructor (
 
         ) public {
@@ -219,6 +231,7 @@ contract XPLODDE is XPLODDE_ERC20 {
         balances[owner] = 5000000000000000000000000;
     }
     uint256 public idTiker = 1;
+    uint256 public idFederation = 1;
     uint256 public lastGas = 1000000000;
     mapping(address => uint256 ) public lastTime;
 
@@ -241,7 +254,9 @@ contract XPLODDE is XPLODDE_ERC20 {
 
     uint256 public windowTime=60;
 
-    function mint(uint256 dataOracle, uint256 tiker, address token) public  returns(bool){
+
+
+    function mintData(uint256 dataOracle, uint256 tiker, address token) public  returns(bool){
          uint256 len;
          updateMinRoundTime(tiker);
 
@@ -279,6 +294,8 @@ contract XPLODDE is XPLODDE_ERC20 {
             require(reputation[msg.sender] >= reputationMediana(tiker));
         }
 
+        require(federations[tasks[token][tiker].federation].members[msg.sender]==true);
+
         //set data time round by sender
 
         lastData[tiker] = dataOracle;
@@ -306,14 +323,14 @@ contract XPLODDE is XPLODDE_ERC20 {
 
         emit Transfer(this, msg.sender, lastGas * 10);
 
-        if(block.timestamp-tasks[token].lastTime > tasks[token].frequency && tasks[token].amount>gasleft()*3){
+        if(block.timestamp-tasks[token][tiker].lastTime > tasks[token][tiker].frequency && tasks[token][tiker].amount>gasleft()*3){
 
-            tasks[token].amount=tasks[token].amount.sub(gasleft()*3);
+            tasks[token][tiker].amount=tasks[token][tiker].amount.sub(gasleft()*3);
 
 
             //register last
-            tasks[token].lastTime;
-            tasks[token].lastTime = block.timestamp;
+            tasks[token][tiker].lastTime;
+            tasks[token][tiker].lastTime = block.timestamp;
 
             uint256 toTransfer = gasleft()/time[tiker][timeround].length;
 
@@ -330,12 +347,13 @@ contract XPLODDE is XPLODDE_ERC20 {
 
 
     //set Task
-    function setTask(address token, uint256 f, string _url) payable public{
+    function setTask(uint256 f, string _url, uint256 tiker, uint256 fed) payable public{
 
-        tasks[token].amount = tasks[token].amount.add(msg.value);
-        tasks[token].lastTime = block.timestamp;
-        tasks[token].frequency = f;
-        tasks[token].url = _url;
+        tasks[msg.sender][tiker].amount = tasks[msg.sender][tiker].amount.add(msg.value);
+        tasks[msg.sender][tiker].lastTime = block.timestamp;
+        tasks[msg.sender][tiker].frequency = f;
+        tasks[msg.sender][tiker].url = _url;
+        tasks[msg.sender][tiker].federation = fed;
     }
 
     //get las data reported in a round by tiker
@@ -345,12 +363,12 @@ contract XPLODDE is XPLODDE_ERC20 {
     }
 
     //buy reputation with eth donation to the project
-    function add_Federation(uint256 _val,  address _address) public onlyOwner returns(bool){
+    function add_Reputation(uint256 _val,  address _address) public onlyOwner returns(bool){
         reputation[_address]=reputation[_address].add(_val / (lastGas * 10));
         return true;
     }
 
-    function remove_Federation(address _address) public onlyOwner returns(bool){
+    function remove_Reputation(address _address) public onlyOwner returns(bool){
         delete(reputation[_address]);
         return true;
     }
@@ -375,7 +393,7 @@ contract XPLODDE is XPLODDE_ERC20 {
     }
 
     //xplodde data from contract getting the mediana , requires 2 elements in array
-    function xpldData(uint256 tiker)public view returns(uint256){
+    function medianaData(uint256 tiker)public view returns(uint256){
         uint256 l = time[tiker][last[tiker]].length;
         uint256[] memory arr = new uint256[] (l);
 
@@ -429,8 +447,32 @@ contract XPLODDE is XPLODDE_ERC20 {
         return tikers[_addr].id;
     }
 
+    function addFederation(string _name,  uint256 fee) public payable {
+        require(msg.value > 1000000000000000000);
+        federations[idFederation].name = _name;
+        federations[idFederation].fee = fee;
+        federations[idFederation].owner = msg.sender;
+
+        owner.transfer(msg.value);
+
+        idFederation++;
+        
+    }
+
+    function federationMember( uint256 idfed, address newmember, bool state) public returns(bool){
+        if(federations[idfed].owner==msg.sender){
+            federations[idfed].members[newmember]=state;
+            return true;
+        }else{
+            return false;
+        }
+        
+
+    }
+
     function getTiker(address _addr) public view returns (string, uint256){
       return(tikers[_addr].name, tikers[_addr].id);
     }
 
 }
+ 

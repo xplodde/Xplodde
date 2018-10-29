@@ -447,16 +447,20 @@ contract XPLODDE is XPLODDE_ERC20 {
         return tikers[_addr].id;
     }
 
-    function addFederation(string _name,  uint256 fee) public payable {
+    function addFederation(string _name,  uint256 _fee) public payable {
         require(msg.value > 1000000000000000000);
         federations[idFederation].name = _name;
-        federations[idFederation].fee = fee;
+        federations[idFederation].fee = _fee;
         federations[idFederation].owner = msg.sender;
 
         owner.transfer(msg.value);
 
         idFederation++;
         
+    }
+
+    function getFederationFee(uint256 _idFederation) public view returns(uint256){
+        return federations[_idFederation].fee;
     }
 
     function federationMember( uint256 idfed, address newmember, bool state) public returns(bool){

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.25;
 
 /*
     Copyright 2018, Vicent Nos & Mireia Puig
@@ -84,8 +84,9 @@ contract Ownable {
 
 contract Token {
      function RUN() pure public;
-     function xpldData(uint256 tiker)public view returns(uint256);
-     function setTask(address token, uint256 f, string _url) payable public;
+     function medianaData(uint256 tiker)public view returns(uint256);
+     function setTask( uint256 f, string _url, uint256 tiker,  uint256 federation) payable public;
+     function getFederationFee(uint256) public view returns(uint256);
  }
 
 contract ForwardSmartContract_ERC20 is Ownable {
@@ -145,7 +146,8 @@ contract ForwardSmartContract_ERC20 is Ownable {
   uint256[] public liquidate;
   uint256[] public cancel;
   uint256[] public arr;
-
+  address public tokenAddr = 0x103262f243E6f67d12D6a4EA0d45302C1FA4BB0a;
+  
   event Transfer(address indexed from, address indexed to, uint256 value);
 
   function transfer(address _to, uint256 _value) public returns (bool) {
@@ -155,6 +157,13 @@ contract ForwardSmartContract_ERC20 is Ownable {
       return true;
   }
 
+
+  function medianaData(uint256 _tiker) public view returns(uint256){
+   
+    Token token = Token(tokenAddr);
+    return token.medianaData(_tiker);
+  }
+  
   // create new deal
   function deal(uint256 _dealTime, uint256 _initialMargin, uint256 _maintenanceMargin, uint256 _totalSupply, uint256 _pairType, bool _private) internal returns(bool success) {
     dealed[dealId].activeDeal = false;
@@ -168,8 +177,9 @@ contract ForwardSmartContract_ERC20 is Ownable {
 
     dealed[dealId].data[0].privateDeal = _private;
     dealed[dealId].data[0].creationDate = block.timestamp; // NEW ASSIGMENT
-    dealed[dealId].data[0].creationPrice = pair[_pairType];
-    dealed[dealId].totalSupplyValue = pair[_pairType].mul(_totalSupply);
+    uint256 prvpair=medianaData(_pairType);
+    dealed[dealId].data[0].creationPrice = prvpair;
+    dealed[dealId].totalSupplyValue = prvpair.mul(_totalSupply);
     dealed[dealId].initialMarginValue = (dealed[dealId].totalSupplyValue.mul(_initialMargin)).div(100);
     dealed[dealId].maintenanceMarginValue = (dealed[dealId].initialMarginValue.mul(_maintenanceMargin)).div(100);
 
@@ -288,7 +298,7 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
   uint256 public tokenTicker;
   uint256 public tokenIndex;
   address public contractAddr = this;
-  address public tokenAddr = 0x103262f243E6f67d12D6a4EA0d45302C1FA4BB0a;
+  
   uint256 public xpldDataAmount;
 
   constructor() public {
@@ -298,8 +308,12 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
   function() public{}
 
   // Deal creator have to createDeal and joinAndPayDeal
-  function createDeal(bool _dealer, uint256 _dealTime, uint256 _dealInitialMargin, uint256 _dealMaintenanceMargin, uint256 _dealTotalSupply, uint256 _dealPairType, bool _private) public returns(bool success) {
+  function createDeal(bool _dealer, uint256 _dealTime, uint256 _dealInitialMargin, uint256 _dealMaintenanceMargin, uint256 _dealTotalSupply, uint256 _dealPairType, bool _private, uint256 _f, string _urltask) public returns(bool success) {
     uint256 index = dealId;
+
+
+    setTask(_f, _urltask, _dealPairType , 0, _dealTime);
+
     deal(_dealTime, _dealInitialMargin, _dealMaintenanceMargin, _dealTotalSupply, _dealPairType, _private);
 
     if(_dealer == true) {
@@ -355,9 +369,9 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     if(dealed[_dealId].dealers[0].balance != 0 && dealed[_dealId].dealers[1].balance != 0) {
       pairType = dealed[_dealId].pairType;
       totalSupply = dealed[_dealId].data[0].totalSupply;
-
-      dealed[_dealId].data[0].creationPrice = pair[pairType];
-      dealed[_dealId].totalSupplyValue = pair[pairType].mul(totalSupply);
+      uint256 prvpair=medianaData(pairType);
+      dealed[_dealId].data[0].creationPrice = prvpair;
+      dealed[_dealId].totalSupplyValue = prvpair.mul(totalSupply);
       dealed[_dealId].activeDeal = true;
 
       active.push(_dealId);
@@ -447,7 +461,7 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     return true;
   }
 
-  function setPairPrice(uint256 _index, uint256 _value) internal returns(bool) {
+  function setPairPrice() internal returns(bool) {
     uint256 len = active.length;
     int256 liquidation;
     uint256 sender;
@@ -457,13 +471,17 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     uint256 timestamp;
 
     for(uint actIndex = 0; actIndex < len; actIndex++) {
-      if(dealed[active[actIndex]].activeDeal == true && dealed[active[actIndex]].pairType == _index && dealed[active[actIndex]].time > 0 && dealed[active[actIndex]].dealers[0].recharge == false && dealed[active[actIndex]].dealers[1].recharge == false) {
+      if(dealed[active[actIndex]].activeDeal == true && dealed[active[actIndex]].time > 0 && dealed[active[actIndex]].dealers[0].recharge == false && dealed[active[actIndex]].dealers[1].recharge == false) {
         //can't use SafeMath library because we need to know if liquidation is positive or negative
+            uint256 ptype=dealed[active[actIndex]].pairType;
+            uint256 mdata=medianaData(ptype);
+            
         if(dealed[active[actIndex]].data[0].creationPrice != 0) {
-            liquidation = int256((_value - dealed[active[actIndex]].data[0].creationPrice) * uint256(dealed[active[actIndex]].data[0].totalSupply));
+            liquidation = int256((mdata - dealed[active[actIndex]].data[0].creationPrice) * uint256(dealed[active[actIndex]].data[0].totalSupply));
             dealed[active[actIndex]].data[0].creationPrice = 0;
         } else {
-            liquidation = int256((_value - dailyPair[dealed[active[actIndex]].pairType]) * uint256(dealed[active[actIndex]].data[0].totalSupply));
+
+            liquidation = int256((mdata - dailyPair[dealed[active[actIndex]].pairType]) * uint256(dealed[active[actIndex]].data[0].totalSupply));
         }
 
         timestamp = block.timestamp;
@@ -529,8 +547,10 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
         cancel.push(active[actIndex]);
       }
     //for end
+        dailyPair[actIndex] = mdata;
+        
     }
-    dailyPair[_index] = _value;
+    
     return true;
   }
 
@@ -566,10 +586,6 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     return true;
   }
 
-  function setCurrentPair(uint256 _index, uint256 _value) internal returns(bool) {
-    pair[_index] = _value;
-    return true;
-  }
 
   function rechargeDealer(uint256 _dealId) public payable returns (bool success) {
     require(dealed[_dealId].dealers[0].addr == msg.sender || dealed[_dealId].dealers[1].addr == msg.sender);
@@ -684,30 +700,23 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
 
   }
 
-  function setTask(uint256 _f, string _url) public payable {
+  function setTask(uint256 _f, string _url, uint256 _tiker,uint256 _federation, uint256 _dealTime) public payable {
       Token token = Token(tokenAddr);
-      token.setTask.value(msg.value)(contractAddr, _f, _url);
+      uint256 federationFee=token.getFederationFee(_federation);
+      uint256 am=_dealTime*federationFee;
+      token.setTask.value(am)( _f, _url, _tiker, _federation);
   }
 
-  function setTokenParameters(uint256 _ticker, uint256 _index) public returns(bool success) {
-      tokenTicker = _ticker;
-      tokenIndex = _index;
 
-      return true;
-  }
 
-  function xplodingData() public{
-    // this function must be executed one time before Run or RUNdailyPair
-    Token token = Token(tokenAddr);
-    xpldDataAmount = token.xpldData(tokenTicker);
-  }
 
   function RUN() public {
-      setCurrentPair(tokenIndex, xpldDataAmount);
+  		checkRecharges();
+  		setPairPrice();
+  		liquidations();
+  		cancellations();
+
   }
 
-  function RUNdailyPair() public {
-      setPairPrice(tokenIndex, xpldDataAmount);
-  }
 
 }

@@ -1,4 +1,5 @@
-
+/kilauea/node_modules
+/kilauea/config.js
 /wallet/build
 /wallet/releases
 /wallet/node_modules

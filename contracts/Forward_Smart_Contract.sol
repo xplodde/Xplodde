@@ -59,6 +59,14 @@ pragma solidity 0.4.25;
   }
 }
 
+
+contract Token {
+     function RUN() pure public;
+     function medianaData(uint256 tiker)public view returns(uint256);
+     function setTask( uint256 f, string _url, uint256 tiker,  uint256 federation) payable public;
+     function getFederationFee(uint256) public view returns(uint256);
+ }
+
 contract Ownable {
 
     address public owner;
@@ -80,16 +88,26 @@ contract Ownable {
         owner = newOwner;
     }
 
+
+
 }
 
-contract Token {
-     function RUN() pure public;
-     function medianaData(uint256 tiker)public view returns(uint256);
-     function setTask( uint256 f, string _url, uint256 tiker,  uint256 federation) payable public;
-     function getFederationFee(uint256) public view returns(uint256);
- }
 
-contract ForwardSmartContract_ERC20 is Ownable {
+
+contract Oracle{
+    
+  uint256 public prvpair;
+  address public tokenAddr = 0x516619D801628B44Ece6eCe66d5E7AF81989c15B;
+
+  function myData(uint256 _tiker) public {
+   uint256 tk=_tiker;
+    Token token = Token(tokenAddr);
+    prvpair= token.medianaData(tk);
+  }
+ 
+}
+
+contract Xplodde_Forward is Ownable,Oracle {
   using SafeMath for uint256;
 
   mapping(uint256 => uint256) public pair; // NEW MAPPING
@@ -141,12 +159,13 @@ contract ForwardSmartContract_ERC20 is Ownable {
   /* Public variables */
 
   uint256 public dealId = 0;
+
   uint256[] public pending;
   uint256[] public active;
   uint256[] public liquidate;
   uint256[] public cancel;
   uint256[] public arr;
-  address public tokenAddr = 0x103262f243E6f67d12D6a4EA0d45302C1FA4BB0a;
+
   
   event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -158,11 +177,8 @@ contract ForwardSmartContract_ERC20 is Ownable {
   }
 
 
-  function medianaData(uint256 _tiker) public view returns(uint256){
-   
-    Token token = Token(tokenAddr);
-    return token.medianaData(_tiker);
-  }
+
+
   
   // create new deal
   function deal(uint256 _dealTime, uint256 _initialMargin, uint256 _maintenanceMargin, uint256 _totalSupply, uint256 _pairType, bool _private) internal returns(bool success) {
@@ -177,9 +193,14 @@ contract ForwardSmartContract_ERC20 is Ownable {
 
     dealed[dealId].data[0].privateDeal = _private;
     dealed[dealId].data[0].creationDate = block.timestamp; // NEW ASSIGMENT
-    uint256 prvpair=medianaData(_pairType);
+    myData(_pairType);
     dealed[dealId].data[0].creationPrice = prvpair;
-    dealed[dealId].totalSupplyValue = prvpair.mul(_totalSupply);
+    if(prvpair==0){
+	    dealed[dealId].totalSupplyValue = prvpair.mul(_totalSupply);    	
+    }else{
+	    dealed[dealId].totalSupplyValue = prvpair.mul(_totalSupply);
+    }
+
     dealed[dealId].initialMarginValue = (dealed[dealId].totalSupplyValue.mul(_initialMargin)).div(100);
     dealed[dealId].maintenanceMarginValue = (dealed[dealId].initialMarginValue.mul(_maintenanceMargin)).div(100);
 
@@ -291,15 +312,14 @@ contract ForwardSmartContract_ERC20 is Ownable {
 
 }
 
-contract ForwardSmartContract is ForwardSmartContract_ERC20 {
+contract Xplodde is Xplodde_Forward {
   event LogDeposit(address sender, uint amount);
   event LogWithdrawal(address receiver, uint amount);
 
   uint256 public tokenTicker;
   uint256 public tokenIndex;
   address public contractAddr = this;
-  
-  uint256 public xpldDataAmount;
+
 
   constructor() public {
    //needs to set price before create any deal
@@ -308,11 +328,11 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
   function() public{}
 
   // Deal creator have to createDeal and joinAndPayDeal
-  function createDeal(bool _dealer, uint256 _dealTime, uint256 _dealInitialMargin, uint256 _dealMaintenanceMargin, uint256 _dealTotalSupply, uint256 _dealPairType, bool _private, uint256 _f, string _urltask) public returns(bool success) {
+  function createDeal(bool _dealer, uint256 _dealTime, uint256 _dealInitialMargin, uint256 _dealMaintenanceMargin, uint256 _dealTotalSupply, uint256 _dealPairType, bool _private) public returns(bool success) {
     uint256 index = dealId;
 
 
-    setTask(_f, _urltask, _dealPairType , 0, _dealTime);
+  
 
     deal(_dealTime, _dealInitialMargin, _dealMaintenanceMargin, _dealTotalSupply, _dealPairType, _private);
 
@@ -329,12 +349,14 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     return true;
   }
 
-  function joinAndPayDeal(uint256 _dealId, bool _dealer) public payable returns (bool success) {
+  function joinAndPayDeal(uint256 _dealId, bool _dealer, uint256 _f, string _urltask) public payable returns (bool success) {
     require(dealed[_dealId].activeDeal == false);
     require(dealed[_dealId].initialMarginValue == msg.value);
 
     uint256 pairType;
     uint256 totalSupply;
+    
+    setTask(_f, _urltask, dealed[_dealId].pairType , 1, dealed[_dealId].time);
 
     if(_dealer == true) {
       if(dealed[_dealId].dealers[1].addr == 0 && dealed[_dealId].dealers[0].addr != msg.sender) {
@@ -369,7 +391,7 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     if(dealed[_dealId].dealers[0].balance != 0 && dealed[_dealId].dealers[1].balance != 0) {
       pairType = dealed[_dealId].pairType;
       totalSupply = dealed[_dealId].data[0].totalSupply;
-      uint256 prvpair=medianaData(pairType);
+      myData(pairType);
       dealed[_dealId].data[0].creationPrice = prvpair;
       dealed[_dealId].totalSupplyValue = prvpair.mul(totalSupply);
       dealed[_dealId].activeDeal = true;
@@ -470,11 +492,14 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
     uint256 amount;
     uint256 timestamp;
 
+
+    
     for(uint actIndex = 0; actIndex < len; actIndex++) {
       if(dealed[active[actIndex]].activeDeal == true && dealed[active[actIndex]].time > 0 && dealed[active[actIndex]].dealers[0].recharge == false && dealed[active[actIndex]].dealers[1].recharge == false) {
         //can't use SafeMath library because we need to know if liquidation is positive or negative
             uint256 ptype=dealed[active[actIndex]].pairType;
-            uint256 mdata=medianaData(ptype);
+            myData(ptype);
+            uint256 mdata=prvpair;
             
         if(dealed[active[actIndex]].data[0].creationPrice != 0) {
             liquidation = int256((mdata - dealed[active[actIndex]].data[0].creationPrice) * uint256(dealed[active[actIndex]].data[0].totalSupply));
@@ -706,7 +731,6 @@ contract ForwardSmartContract is ForwardSmartContract_ERC20 {
       uint256 am=_dealTime*federationFee;
       token.setTask.value(am)( _f, _url, _tiker, _federation);
   }
-
 
 
 
